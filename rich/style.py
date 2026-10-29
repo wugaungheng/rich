@@ -469,6 +469,40 @@ class Style:
         """A Style with background only."""
         return Style(bgcolor=self.bgcolor)
 
+    def with_background(
+        self, bgcolor: Optional[Union[Color, str]] = None
+    ) -> "Style":
+        """Get a copy of this style with the background color set (or cleared).
+
+        Args:
+            bgcolor (Union[Color, str], optional): The background color to set,
+                or None to clear the background color. Defaults to None.
+
+        Returns:
+            Style: A new Style instance with the requested background color.
+        """
+        style = self.copy()
+        if style is NULL_STYLE:
+            style = Style()
+        style._bgcolor = (
+            None
+            if bgcolor is None
+            else bgcolor
+            if isinstance(bgcolor, Color)
+            else Color.parse(bgcolor)
+        )
+        style._ansi = None
+        style._style_definition = None
+        style._hash = None
+        style._null = not (
+            style._set_attributes
+            or style._color
+            or style._bgcolor
+            or style._link
+            or style._meta
+        )
+        return style
+
     @property
     def meta(self) -> Dict[str, Any]:
         """Get meta information (can not be changed after construction)."""

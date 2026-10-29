@@ -265,3 +265,31 @@ def test_clear_meta_and_links_clears_hash():
 
     clear_style = style.clear_meta_and_links()
     assert clear_style._hash is None
+
+
+def test_with_background():
+    style = Style(color="red", bold=True)
+    new_style = style.with_background("blue")
+    assert new_style == Style(color="red", bgcolor="blue", bold=True)
+    assert new_style.bgcolor == Color.parse("blue")
+
+
+def test_with_background_does_not_modify_original():
+    style = Style(color="red", bold=True)
+    style.with_background("blue")
+    assert style == Style(color="red", bold=True)
+    assert style.bgcolor is None
+
+
+def test_with_background_none_clears_background():
+    style = Style(color="red", bgcolor="blue", bold=True)
+    new_style = style.with_background(None)
+    assert new_style == Style(color="red", bold=True)
+    assert new_style.bgcolor is None
+
+
+def test_with_background_accepts_color_instance():
+    style = Style(color="red")
+    new_style = style.with_background(Color.parse("blue"))
+    assert new_style == Style(color="red", bgcolor="blue")
+    assert new_style.bgcolor == Color.parse("blue")
